@@ -1,0 +1,138 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Ishira Homeware — Warm Earthenware Palette */
+  --font-sans: var(--font-jost), 'Jost', sans-serif;
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', serif;
+
+  /* Core color tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-terracotta: var(--terracotta);
+  --color-clay: var(--clay);
+  --color-sand: var(--sand);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-destructive: var(--destructive);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+  color-scheme: light;
+
+  /* Off-white linen background */
+  --background: oklch(0.971 0.009 82);
+  /* Deep warm brown for text */
+  --foreground: oklch(0.248 0.024 48);
+
+  /* Card — slightly warmer off-white */
+  --card: oklch(0.955 0.014 80);
+  --card-foreground: oklch(0.248 0.024 48);
+
+  --popover: oklch(0.955 0.014 80);
+  --popover-foreground: oklch(0.248 0.024 48);
+
+  /* Primary — dark clay brown */
+  --primary: oklch(0.345 0.046 48);
+  --primary-foreground: oklch(0.971 0.009 82);
+
+  /* Secondary — warm clay mid-tone */
+  --secondary: oklch(0.862 0.032 68);
+  --secondary-foreground: oklch(0.248 0.024 48);
+
+  /* Muted — warm greige */
+  --muted: oklch(0.921 0.018 74);
+  --muted-foreground: oklch(0.512 0.036 54);
+
+  /* Accent — terracotta */
+  --accent: oklch(0.59 0.11 42);
+  --accent-foreground: oklch(0.971 0.009 82);
+
+  --destructive: oklch(0.577 0.245 27.325);
+
+  /* Border — warm stone */
+  --border: oklch(0.868 0.026 70);
+  --input: oklch(0.868 0.026 70);
+  --ring: oklch(0.59 0.11 42);
+
+  /* Custom brand tokens */
+  --terracotta: oklch(0.59 0.11 42);
+  --clay: oklch(0.72 0.058 62);
+  --sand: oklch(0.862 0.032 68);
+
+  --radius: 0.25rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Ishira Motion + Layout Fixes
+───────────────────────────────────────────── */
+
+/* Smooth page rendering */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Fix for fixed header overlap (fallback safety) */
+main {
+  padding-top: 0;
+}
+
+/* ── Fade Up Animation ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.8s ease-out forwards;
+}
+
+.animate-fade-up.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-fade-up.delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* Optional: smoother image rendering */
+img {
+  image-rendering: auto;
+}
