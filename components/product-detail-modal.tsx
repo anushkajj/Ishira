@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { Product } from '@/types/product'
 import { useCart } from '@/context/cart-context'
-import { X, ShoppingBag, Check, ShieldCheck, Truck, RotateCcw, Minus, Plus } from 'lucide-react'
+import { X, ShoppingBag, Check, ShieldCheck, Truck, RotateCcw, Minus, Plus, Ban } from 'lucide-react'
 
 interface ProductDetailModalProps {
   product: Product | null
@@ -27,7 +27,10 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
 
   if (!product) return null
 
+  const isOutOfStock = product.inStock === false
+
   const handleAddToCart = () => {
+    if (isOutOfStock) return
     addToCart(product, quantity)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
@@ -60,7 +63,9 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
                 src={selectedImage || product.imageSrc}
                 alt={product.name}
                 fill
-                className="object-cover object-center"
+                className={`object-cover object-center ${
+                  isOutOfStock ? 'opacity-70 grayscale-[20%]' : ''
+                }`}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
@@ -95,10 +100,16 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
                 <span className="font-sans text-[11px] font-medium uppercase tracking-widest text-terracotta">
                   {product.category}
                 </span>
-                {product.isBestSeller && (
-                  <span className="text-[10px] uppercase font-sans tracking-widest px-2 py-0.5 bg-terracotta/10 text-terracotta border border-terracotta/20 rounded-xs">
-                    Bestseller
+                {isOutOfStock ? (
+                  <span className="text-[10px] uppercase font-sans tracking-widest px-2 py-0.5 bg-stone-700 text-white rounded-xs">
+                    Sold Out
                   </span>
+                ) : (
+                  product.isBestSeller && (
+                    <span className="text-[10px] uppercase font-sans tracking-widest px-2 py-0.5 bg-terracotta/10 text-terracotta border border-terracotta/20 rounded-xs">
+                      Bestseller
+                    </span>
+                  )
                 )}
               </div>
 
@@ -106,7 +117,9 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
               <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground leading-tight">
                 {product.name}
               </h2>
-              <div className="font-sans text-2xl font-semibold text-foreground">
+              <div className={`font-sans text-2xl font-semibold ${
+                isOutOfStock ? 'text-muted-foreground line-through' : 'text-foreground'
+              }`}>
                 ₹{product.price.toLocaleString('en-IN')}
               </div>
 
@@ -164,9 +177,12 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
                 <span className="font-sans text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Quantity
                 </span>
-                <div className="flex items-center border border-border">
+                <div className={`flex items-center border border-border ${
+                  isOutOfStock ? 'opacity-50 pointer-events-none' : ''
+                }`}>
                   <button
                     type="button"
+                    disabled={isOutOfStock}
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                     className="p-2 hover:bg-muted text-foreground transition-colors"
                     aria-label="Decrease quantity"
@@ -178,6 +194,7 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
                   </span>
                   <button
                     type="button"
+                    disabled={isOutOfStock}
                     onClick={() => setQuantity((q) => q + 1)}
                     className="p-2 hover:bg-muted text-foreground transition-colors"
                     aria-label="Increase quantity"
@@ -189,14 +206,22 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
 
               <button
                 type="button"
+                disabled={isOutOfStock}
                 onClick={handleAddToCart}
                 className={`w-full py-3.5 px-6 font-sans text-xs font-medium uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 ${
-                  added
+                  isOutOfStock
+                    ? 'bg-muted text-muted-foreground cursor-not-allowed opacity-80'
+                    : added
                     ? 'bg-emerald-800 text-white'
                     : 'bg-foreground text-background hover:bg-terracotta hover:text-white'
                 }`}
               >
-                {added ? (
+                {isOutOfStock ? (
+                  <>
+                    <Ban className="w-4 h-4" />
+                    Out of Stock
+                  </>
+                ) : added ? (
                   <>
                     <Check className="w-4 h-4" />
                     Added to Bag

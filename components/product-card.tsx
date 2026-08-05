@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import { Product } from '@/types/product'
 import { useCart } from '@/context/cart-context'
-import { Eye, ShoppingBag, Check } from 'lucide-react'
+import { Eye, ShoppingBag, Check, Ban } from 'lucide-react'
 
 interface ProductCardProps {
   product: Product
@@ -16,9 +16,12 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
   const [added, setAdded] = React.useState(false)
 
   const isInCart = cart.some((item) => item.product.id === product.id)
+  const isOutOfStock = product.inStock === false
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (isOutOfStock) return
+
     addToCart(product, 1)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
@@ -35,21 +38,31 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
           src={product.imageSrc}
           alt={product.name}
           fill
-          className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+          className={`object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105 ${
+            isOutOfStock ? 'opacity-70 grayscale-[20%]' : ''
+          }`}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-          {product.isBestSeller && (
-            <span className="px-2.5 py-1 bg-terracotta text-white font-sans text-[10px] font-medium tracking-widest uppercase rounded-xs shadow-xs">
-              Bestseller
+          {isOutOfStock ? (
+            <span className="px-2.5 py-1 bg-stone-700 text-white font-sans text-[10px] font-medium tracking-widest uppercase rounded-xs shadow-xs">
+              Sold Out
             </span>
-          )}
-          {product.isNewArrival && (
-            <span className="px-2.5 py-1 bg-foreground text-background font-sans text-[10px] font-medium tracking-widest uppercase rounded-xs">
-              New Arrival
-            </span>
+          ) : (
+            <>
+              {product.isBestSeller && (
+                <span className="px-2.5 py-1 bg-terracotta text-white font-sans text-[10px] font-medium tracking-widest uppercase rounded-xs shadow-xs">
+                  Bestseller
+                </span>
+              )}
+              {product.isNewArrival && (
+                <span className="px-2.5 py-1 bg-foreground text-background font-sans text-[10px] font-medium tracking-widest uppercase rounded-xs">
+                  New Arrival
+                </span>
+              )}
+            </>
           )}
         </div>
 
@@ -82,7 +95,9 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             <h3 className="font-serif text-xl font-normal text-foreground group-hover:text-terracotta transition-colors duration-200">
               {product.name}
             </h3>
-            <span className="font-sans text-sm font-semibold text-foreground whitespace-nowrap">
+            <span className={`font-sans text-sm font-semibold whitespace-nowrap ${
+              isOutOfStock ? 'text-muted-foreground line-through' : 'text-foreground'
+            }`}>
               ₹{product.price.toLocaleString('en-IN')}
             </span>
           </div>
@@ -91,19 +106,27 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
           </p>
         </div>
 
-        {/* Add to Cart Button */}
+        {/* Add to Cart / Out of Stock Button */}
         <button
           type="button"
+          disabled={isOutOfStock}
           onClick={handleAddToCart}
           className={`w-full py-2.5 px-4 font-sans text-xs font-medium tracking-wider uppercase flex items-center justify-center gap-2 transition-all duration-300 border ${
-            added
+            isOutOfStock
+              ? 'bg-muted text-muted-foreground border-border/60 cursor-not-allowed opacity-80'
+              : added
               ? 'bg-emerald-800 text-white border-emerald-800'
               : isInCart
               ? 'bg-secondary text-secondary-foreground border-border hover:bg-terracotta hover:text-white hover:border-terracotta'
               : 'bg-foreground text-background border-foreground hover:bg-terracotta hover:border-terracotta hover:text-white'
           }`}
         >
-          {added ? (
+          {isOutOfStock ? (
+            <>
+              <Ban className="w-3.5 h-3.5" />
+              Out of Stock
+            </>
+          ) : added ? (
             <>
               <Check className="w-3.5 h-3.5" />
               Added to Bag
