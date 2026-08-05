@@ -4,17 +4,87 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useCart } from '@/context/cart-context'
 import { CheckoutModal } from '@/components/checkout-modal'
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Truck } from 'lucide-react'
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Truck, Loader2 } from 'lucide-react'
+
+// Dynamic script loader for Razorpay Checkout SDK
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') return resolve(false)
+    if ((window as any).Razorpay) return resolve(true)
+
+    const script = document.createElement('script')
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+    document.body.appendChild(script)
+  })
+}
 
 export function CartDrawer() {
   const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems } = useCart()
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   if (!isCartOpen) return null
 
   const freeShippingThreshold = 3000
   const progressToFreeShipping = Math.min(100, (subtotal / freeShippingThreshold) * 100)
   const remainingForFreeShipping = freeShippingThreshold - subtotal
+
+  // Direct Razorpay Payment Handler
+  const handleRazorpayPayment = async () => {
+    setIsLoading(true)
+
+    try {
+      // 1. Load Razorpay SDK
+      const isLoaded = await loadRazorpayScript()
+      if (!isLoaded) {
+        alert('Failed to load Razorpay SDK. Please check your internet connection.')
+        setIsLoading(false)
+        return
+      }
+
+      // 2. Create Order on Server
+      const res = await fetch('/api/razorpay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: subtotal }),
+      })
+
+      const orderData = await res.json()
+
+      if (!res.ok || !orderData.id) {
+        throw new Error(orderData.error || 'Failed to initialize payment order.')
+      }
+
+      // 3. Configure Razorpay Gateway Options
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'Ishira Homeware',
+        description: `Order for ${totalItems} item(s)`,
+        order_id: orderData.id,
+        handler: function (response: any) {
+          // Success Callback
+          alert(`Payment Successful!\nPayment ID: ${response.razorpay_payment_id}`)
+          closeCart()
+        },
+        theme: {
+          color: '#C86D51', // Terracotta theme color
+        },
+      }
+
+      // 4. Open Razorpay Checkout Window
+      const paymentObject = new (window as any).Razorpay(options)
+      paymentObject.open()
+    } catch (err: any) {
+      console.error('Payment Error:', err)
+      alert(err.message || 'Payment initialization failed. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <>
@@ -27,7 +97,7 @@ export function CartDrawer() {
 
         <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
           <div className="w-screen max-w-md bg-background border-l border-border shadow-2xl flex flex-col justify-between z-10 animate-slide-left">
-            
+
             {/* Header */}
             <div className="p-6 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -84,7 +154,7 @@ export function CartDrawer() {
                   <button
                     type="button"
                     onClick={closeCart}
-                    className="mt-2 px-6 py-3 bg-foreground text-background hover:bg-terracotta font-sans text-xs font-medium uppercase tracking-widest transition-colors duration-200"
+                    className="mt-2 px-6 py-3 bg-foreground text-background hover:bg-terracotta font-sans text-xs font-medium uppercase tracking-widest transition-colors duration-200 cursor-pointer"
                   >
                     Explore Catalogue
                   </button>
@@ -116,7 +186,7 @@ export function CartDrawer() {
                         <button
                           type="button"
                           onClick={() => removeFromCart(item.product.id)}
-                          className="text-muted-foreground hover:text-destructive p-1 transition-colors"
+                          className="text-muted-foreground hover:text-destructive p-1 transition-colors cursor-pointer"
                           aria-label={`Remove ${item.product.name}`}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -129,7 +199,7 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                            className="p-1.5 hover:bg-muted text-foreground transition-colors"
+                            className="p-1.5 hover:bg-muted text-foreground transition-colors cursor-pointer"
                             aria-label="Decrease quantity"
                           >
                             <Minus className="w-3 h-3" />
@@ -140,7 +210,7 @@ export function CartDrawer() {
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                            className="p-1.5 hover:bg-muted text-foreground transition-colors"
+                            className="p-1.5 hover:bg-muted text-foreground transition-colors cursor-pointer"
                             aria-label="Increase quantity"
                           >
                             <Plus className="w-3 h-3" />
@@ -169,25 +239,33 @@ export function CartDrawer() {
                     </span>
                   </div>
                   <p className="font-sans text-[11px] text-muted-foreground">
-                    Taxes included. Shipping calculated at checkout.
+                    Taxes included. Free Pan-India shipping applied on qualified orders.
                   </p>
                 </div>
 
+                {/* Razorpay Action Button */}
                 <button
                   type="button"
-                  onClick={() => {
-                    closeCart()
-                    setIsCheckoutOpen(true)
-                  }}
-                  className="w-full py-4 bg-foreground text-background hover:bg-terracotta hover:text-white font-sans text-xs font-medium uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-lg"
+                  disabled={isLoading}
+                  onClick={handleRazorpayPayment}
+                  className="w-full py-4 bg-foreground text-background hover:bg-terracotta hover:text-white font-sans text-xs font-medium uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
                 >
-                  Proceed to Checkout
-                  <ArrowRight className="w-4 h-4" />
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Connecting to Gateway...
+                    </>
+                  ) : (
+                    <>
+                      Proceed to Pay
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
 
                 <div className="flex items-center justify-center gap-2 font-sans text-[10px] text-muted-foreground uppercase tracking-widest pt-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-terracotta" />
-                  Secure Hand-Packed Ceramic Delivery
+                  256-Bit Encrypted Secure Checkout
                 </div>
               </div>
             )}
