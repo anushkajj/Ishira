@@ -6,7 +6,7 @@ export const PRODUCTS: Product[] = [
     name: 'The Ritual Cup',
     // subtitle: 'Wheel-thrown ceramic mug with tactile thumb rest',
     subtitle: '',
-    price: 5,
+    price: 395,
     category: 'Drinkware',
     imageSrc: '/images/product-cup-1.png',
     images: ['/images/product-cup-1.png'],

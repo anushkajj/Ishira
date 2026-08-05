@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/cart-context'
-import { CheckoutModal } from '@/components/checkout-modal'
+import { ShippingModal, ShippingDetails } from '@/components/shipping-modal'
 import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, Truck } from 'lucide-react'
 
 // Dynamic script loader for Razorpay Checkout SDK
@@ -24,20 +24,24 @@ const loadRazorpayScript = (): Promise<boolean> => {
 export function CartDrawer() {
   const router = useRouter()
   const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems, clearCart } = useCart()
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
+  
+  const [isShippingOpen, setIsShippingOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   if (!isCartOpen) return null
 
+  // Fixed Threshold Alignment (Set to ₹1,000 across both text & calculation)
   const freeShippingThreshold = 1000
   const progressToFreeShipping = Math.min(100, (subtotal / freeShippingThreshold) * 100)
   const remainingForFreeShipping = freeShippingThreshold - subtotal
 
-  // Direct Razorpay Payment Handler (Kept intact for quick re-enabling)
-  const handleRazorpayPayment = async () => {
+  // Triggered when user completes the Shipping Modal form
+  const handleShippingSubmit = async (shippingDetails: ShippingDetails) => {
+    setIsShippingOpen(false)
     setIsLoading(true)
 
     try {
+      // 1. Load Razorpay SDK
       const isLoaded = await loadRazorpayScript()
       if (!isLoaded) {
         alert('Failed to load Razorpay SDK. Please check your internet connection.')
@@ -45,6 +49,7 @@ export function CartDrawer() {
         return
       }
 
+      // 2. Create Order on Server
       const res = await fetch('/api/razorpay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -57,6 +62,7 @@ export function CartDrawer() {
         throw new Error(orderData.error || 'Failed to initialize payment order.')
       }
 
+      // 3. Configure Razorpay Gateway Options
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderData.amount,
@@ -64,7 +70,12 @@ export function CartDrawer() {
         name: 'Ishira Homeware',
         description: `Order for ${totalItems} item(s)`,
         order_id: orderData.id,
-        handler: function (response: any) {
+        prefill: {
+          name: shippingDetails.fullName,
+          contact: shippingDetails.phone,
+          email: shippingDetails.email,
+        },
+        handler: async function (response: any) {
           const newOrder = {
             id: response.razorpay_order_id || `ORD-${Date.now()}`,
             paymentId: response.razorpay_payment_id,
@@ -76,8 +87,10 @@ export function CartDrawer() {
             items: [...cart],
             totalAmount: subtotal,
             status: 'Confirmed',
+            shippingDetails,
           }
 
+          // A. Store in local storage for /orders view
           try {
             const existingOrders = JSON.parse(localStorage.getItem('my_orders') || '[]')
             localStorage.setItem('my_orders', JSON.stringify([newOrder, ...existingOrders]))
@@ -85,6 +98,18 @@ export function CartDrawer() {
             console.error('Failed to record order history', e)
           }
 
+          // B. Send complete order & shipping details via Resend API
+          try {
+            await fetch('/api/send-order-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newOrder),
+            })
+          } catch (e) {
+            console.error('Failed to send admin notification email', e)
+          }
+
+          // C. Cleanup and Redirect
           localStorage.removeItem('ishira_cart_v1')
           clearCart()
           closeCart()
@@ -147,7 +172,7 @@ export function CartDrawer() {
                     <span>Add <strong className="text-terracotta">₹{remainingForFreeShipping.toLocaleString('en-IN')}</strong> more for Free Shipping</span>
                   )}
                 </span>
-                <span className="text-muted-foreground font-sans text-[10px]">₹3,000 threshold</span>
+                <span className="text-muted-foreground font-sans text-[10px]">₹1,000 threshold</span>
               </div>
               <div className="w-full bg-border/60 h-1.5 rounded-full overflow-hidden">
                 <div
@@ -262,7 +287,7 @@ export function CartDrawer() {
                   </p>
                 </div>
 
-                {/* Paused Ordering Button */}
+                {/* Temporarily Disabled Checkout Button */}
                 <button
                   type="button"
                   disabled={true}
@@ -281,10 +306,12 @@ export function CartDrawer() {
         </div>
       </div>
 
-      {/* Checkout Modal */}
-      <CheckoutModal
-        isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
+      {/* Shipping Address Modal */}
+      <ShippingModal
+        isOpen={isShippingOpen}
+        onClose={() => setIsShippingOpen(false)}
+        onSubmit={handleShippingSubmit}
+        subtotal={subtotal}
       />
     </>
   )
