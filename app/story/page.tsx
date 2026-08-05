@@ -58,7 +58,7 @@ export default function StoryPage() {
 
         </section>
 
-        {/* Craft Process Grid */}
+        {/* Craft Process Grid
         <section className="bg-sand/30 py-24 border-t border-b border-border/60">
           <div className="max-w-5xl mx-auto px-6 md:px-10 flex flex-col gap-12">
             <div className="text-center flex flex-col gap-3">
@@ -104,7 +104,7 @@ export default function StoryPage() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Back to Catalogue Banner */}
         <section className="mx-auto max-w-4xl px-6 md:px-10 py-20 text-center flex flex-col items-center gap-6">

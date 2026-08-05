@@ -95,21 +95,15 @@ export function SiteFooter() {
               >
                 Our Story & Philosophy
               </Link>
-              <Link
-                href="/#collection-teaser"
-                className="font-sans text-sm text-muted-foreground hover:text-terracotta transition-colors duration-200"
-              >
-                Featured Preview
-              </Link>
             </nav>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="border-t border-border py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="font-sans text-xs text-muted-foreground/60" suppressHydrationWarning>
+          {/* <p className="font-sans text-xs text-muted-foreground/60" suppressHydrationWarning>
             &copy; {year} Ishira Homeware. All rights reserved.
-          </p>
+          </p> */}
           <p className="font-sans text-xs text-muted-foreground/40 italic font-serif">
             Made with care.
           </p>

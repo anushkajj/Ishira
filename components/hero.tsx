@@ -24,9 +24,9 @@ export function Hero() {
         <div className="max-w-xl flex flex-col gap-6 text-white animate-fade-up">
           
           {/* Tagline */}
-          <span className="font-sans text-[11px] font-medium tracking-[0.3em] uppercase text-white/80">
+          {/* <span className="font-sans text-[11px] font-medium tracking-[0.3em] uppercase text-white/80">
             Ishira Homewares
-          </span>
+          </span> */}
 
           {/* Heading */}
           <h1 className="font-serif font-light text-5xl md:text-6xl lg:text-7xl leading-[1.08] tracking-tight text-white">

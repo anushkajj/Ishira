@@ -1,8 +1,8 @@
 import { SiteHeader } from '@/components/site-header'
 import { Hero } from '@/components/hero'
 import { ProductCatalog } from '@/components/product-catalog'
-import { OurStorySection } from '@/components/our-story-section'
-import { CollectionTeaser } from '@/components/collection-teaser'
+import { OurPhilosophySection } from '@/components/our-philosophy-section'
+// import { CollectionTeaser } from '@/components/collection-teaser'
 import { SiteFooter } from '@/components/site-footer'
 
 export default function Page() {
@@ -12,10 +12,7 @@ export default function Page() {
       <main>
         <Hero />
         <ProductCatalog />
-        <OurStorySection />
-        <div id="collection-teaser">
-          <CollectionTeaser />
-        </div>
+        <OurPhilosophySection />
       </main>
       <SiteFooter />
     </>
