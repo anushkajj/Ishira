@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export function SiteFooter() {
   const year = new Date().getFullYear()
 
@@ -10,7 +12,7 @@ export function SiteFooter() {
           <div className="flex flex-col gap-4">
             <span className="font-serif text-2xl font-light text-foreground tracking-wide">Ishira</span>
             <p className="font-sans text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Quietly beautiful ceramics for everyday rituals. Handcrafted, thoughtfully priced.
+              Quietly beautiful ceramics for everyday rituals. Handcrafted by two sisters, thoughtfully priced.
             </p>
           </div>
 
@@ -27,7 +29,6 @@ export function SiteFooter() {
                 className="flex items-center gap-3 group w-fit"
                 aria-label="Follow Ishira Homeware on Instagram"
               >
-                {/* Instagram icon */}
                 <svg
                   width="16"
                   height="16"
@@ -54,7 +55,6 @@ export function SiteFooter() {
                 className="flex items-center gap-3 group w-fit"
                 aria-label="Email Ishira Homeware"
               >
-                {/* Email icon */}
                 <svg
                   width="16"
                   height="16"
@@ -77,30 +77,33 @@ export function SiteFooter() {
             </nav>
           </div>
 
-          {/* Future links column — ready for catalogue, ordering, etc. */}
+          {/* Quick Navigation column */}
           <div className="flex flex-col gap-4">
             <span className="font-sans text-xs font-medium tracking-[0.2em] uppercase text-terracotta">
-              Coming Soon
+              Explore
             </span>
-            <nav aria-label="Future site sections" className="flex flex-col gap-3">
-              {['Catalogue', 'Ordering', 'About'].map((item) => (
-                <span
-                  key={item}
-                  className="font-sans text-sm text-muted-foreground/60 cursor-default select-none"
-                  aria-label={`${item} — coming soon`}
-                >
-                  {item}
-                </span>
-              ))}
+            <nav aria-label="Footer navigation links" className="flex flex-col gap-3">
+              <Link
+                href="/#catalogue"
+                className="font-sans text-sm text-muted-foreground hover:text-terracotta transition-colors duration-200"
+              >
+                Shop Catalogue
+              </Link>
+              <Link
+                href="/story"
+                className="font-sans text-sm text-muted-foreground hover:text-terracotta transition-colors duration-200"
+              >
+                Our Story & Philosophy
+              </Link>
             </nav>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="border-t border-border py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="font-sans text-xs text-muted-foreground/60" suppressHydrationWarning>
+          {/* <p className="font-sans text-xs text-muted-foreground/60" suppressHydrationWarning>
             &copy; {year} Ishira Homeware. All rights reserved.
-          </p>
+          </p> */}
           <p className="font-sans text-xs text-muted-foreground/40 italic font-serif">
             Made with care.
           </p>
