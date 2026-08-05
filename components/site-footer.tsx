@@ -98,7 +98,7 @@ export function SiteFooter() {
 
         {/* Bottom bar */}
         <div className="border-t border-border py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="font-sans text-xs text-muted-foreground/60">
+          <p className="font-sans text-xs text-muted-foreground/60" suppressHydrationWarning>
             &copy; {year} Ishira Homeware. All rights reserved.
           </p>
           <p className="font-sans text-xs text-muted-foreground/40 italic font-serif">

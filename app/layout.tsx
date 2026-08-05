@@ -39,8 +39,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-background">
-      <body className={`${_cormorant.variable} ${_jost.variable} antialiased font-sans`}>
+    <html lang="en" className="bg-background" suppressHydrationWarning>
+      <body className={`${_cormorant.variable} ${_jost.variable} antialiased font-sans`} suppressHydrationWarning>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
