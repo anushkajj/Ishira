@@ -27,33 +27,33 @@ export function SiteHeader() {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
-      {/* Announcement Banner - Soft translucent terracotta */}
-      <div className="bg-terracotta/90 backdrop-blur-md text-white font-sans text-xs font-medium py-2 px-4 text-center tracking-wider uppercase shadow-xs">
+      {/* Announcement Banner */}
+      <div className="bg-terracotta/90 backdrop-blur-md text-white font-sans text-[10px] sm:text-xs font-medium py-1.5 sm:py-2 px-3 text-center tracking-wider uppercase shadow-xs">
         📢 Notice: We are currently not accepting new orders.
       </div>
 
-      {/* Main Header - Lighter, transparent & glassmorphic */}
+      {/* Main Header */}
       <header
         className={`transition-all duration-500 ${
           scrolled
-            ? 'bg-stone-950/40 backdrop-blur-md border-b border-white/10 shadow-sm py-3 text-stone-100'
-            : 'bg-gradient-to-b from-stone-950/30 via-stone-950/10 to-transparent backdrop-blur-[2px] py-4 text-white'
+            ? 'bg-stone-950/40 backdrop-blur-md border-b border-white/10 shadow-sm py-2.5 sm:py-3 text-stone-100'
+            : 'bg-gradient-to-b from-stone-950/30 via-stone-950/10 to-transparent backdrop-blur-[2px] py-3 sm:py-4 text-white'
         }`}
         role="banner"
       >
-        <div className="mx-auto w-full max-w-7xl px-6 md:px-12 flex items-center justify-between transition-all duration-300">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-12 flex items-center justify-between transition-all duration-300">
 
           {/* Left: Quick Nav Links */}
-          <nav className="flex items-center gap-6 sm:gap-8">
+          <nav className="flex items-center gap-3 sm:gap-6 md:gap-8 min-w-[70px]">
             <Link
               href="/#catalogue"
-              className="font-sans text-[11px] font-medium tracking-[0.25em] uppercase text-white/90 hover:text-white border-b border-white/30 hover:border-white transition-all pb-0.5 drop-shadow-xs"
+              className="font-sans text-[10px] sm:text-[11px] font-medium tracking-[0.15em] sm:tracking-[0.25em] uppercase text-white/90 hover:text-white border-b border-white/30 hover:border-white transition-all pb-0.5 drop-shadow-xs"
             >
               Shop
             </Link>
             <Link
               href="/story"
-              className="font-sans text-[11px] font-medium tracking-[0.25em] uppercase text-white/90 hover:text-white border-b border-white/30 hover:border-white transition-all pb-0.5 drop-shadow-xs"
+              className="hidden sm:inline-block font-sans text-[11px] font-medium tracking-[0.25em] uppercase text-white/90 hover:text-white border-b border-white/30 hover:border-white transition-all pb-0.5 drop-shadow-xs"
             >
               Our Story
             </Link>
@@ -62,14 +62,14 @@ export function SiteHeader() {
           {/* Center: Brand Name Logo */}
           <Link
             href="/"
-            className="font-serif text-2xl md:text-3xl tracking-[0.35em] uppercase font-light text-white hover:opacity-80 transition-opacity drop-shadow-sm"
+            className="font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.2em] sm:tracking-[0.35em] uppercase font-light text-white hover:opacity-80 transition-opacity drop-shadow-sm text-center"
             aria-label="Ishira Homeware home"
           >
             Ishira
           </Link>
 
-          {/* Right: Collection Link, Orders Link & Cart Trigger */}
-          <div className="flex items-center gap-4 sm:gap-6">
+          {/* Right: Actions & Cart Trigger */}
+          <div className="flex items-center justify-end gap-2.5 sm:gap-5 min-w-[70px]">
             <Link
               href="/#catalogue"
               className="hidden md:inline-block font-sans text-[11px] font-medium tracking-[0.25em] uppercase text-white/90 hover:text-white border-b border-white/30 hover:border-white transition-all pb-0.5 drop-shadow-xs"
@@ -80,11 +80,11 @@ export function SiteHeader() {
             {/* My Orders Link */}
             <Link
               href="/orders"
-              className="flex items-center gap-1.5 text-white/90 hover:text-white transition-colors group drop-shadow-xs"
+              className="p-1 sm:p-0 flex items-center gap-1.5 text-white/90 hover:text-white transition-colors group drop-shadow-xs"
               title="My Orders"
               aria-label="View My Orders"
             >
-              <Package className="w-5 h-5 stroke-[1.5]" />
+              <Package className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.5]" />
               <span className="hidden sm:inline-block font-sans text-[11px] font-medium tracking-[0.25em] uppercase border-b border-white/30 hover:border-white transition-all pb-0.5">
                 Orders
               </span>
@@ -94,12 +94,12 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={openCart}
-              className="relative p-2 text-white/90 hover:text-white transition-colors group cursor-pointer drop-shadow-xs"
+              className="relative p-1.5 text-white/90 hover:text-white transition-colors group cursor-pointer drop-shadow-xs"
               aria-label={`Shopping Cart with ${totalItems} items`}
             >
-              <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
+              <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.5]" />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 px-1.5 py-0.5 bg-terracotta text-white font-sans text-[10px] font-bold rounded-full shadow-xs">
+                <span className="absolute -top-1 -right-1 px-1.5 py-0.2 bg-terracotta text-white font-sans text-[9px] sm:text-[10px] font-bold rounded-full shadow-xs min-w-[16px] text-center">
                   {totalItems}
                 </span>
               )}

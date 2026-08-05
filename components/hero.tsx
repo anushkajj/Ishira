@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export function Hero() {
   return (
-    <section className="relative w-full h-screen min-h-[650px] overflow-hidden flex items-center">
+    <section className="relative w-full h-screen min-h-[600px] sm:min-h-[650px] overflow-hidden flex items-center">
       {/* Background Image: Full width left to right */}
       <Image
         src="/images/hero-ritual.png"
@@ -17,32 +17,27 @@ export function Hero() {
       />
 
       {/* Dark tint gradient for readable text contrast */}
-      <div className="absolute inset-0 bg-black/25 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
+      <div className="absolute inset-0 bg-black/30 bg-gradient-to-r from-black/60 via-black/25 to-transparent" />
 
       {/* Content Overlay */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-16">
-        <div className="max-w-xl flex flex-col gap-6 text-white animate-fade-up">
-          
-          {/* Tagline */}
-          {/* <span className="font-sans text-[11px] font-medium tracking-[0.3em] uppercase text-white/80">
-            Ishira Homewares
-          </span> */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 pt-28 sm:pt-32">
+        <div className="max-w-xl flex flex-col gap-4 sm:gap-6 text-white animate-fade-up">
 
           {/* Heading */}
-          <h1 className="font-serif font-light text-5xl md:text-6xl lg:text-7xl leading-[1.08] tracking-tight text-white">
+          <h1 className="font-serif font-light text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight text-white drop-shadow-sm">
             Crafted for Everyday Rituals.
           </h1>
 
           {/* Subtitle */}
-          <p className="font-sans text-sm md:text-base leading-relaxed text-white/90 max-w-md font-light">
+          <p className="font-sans text-xs sm:text-sm md:text-base leading-relaxed text-white/90 max-w-md font-light drop-shadow-xs">
             Thoughtfully curated homeware designed to make everyday moments feel beautiful.
           </p>
 
           {/* Action CTAs */}
-          <div className="flex items-center gap-6 pt-4">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-2 sm:pt-4">
             <Link
               href="/#catalogue"
-              className="px-8 py-3.5 bg-white text-stone-900 font-sans text-xs font-medium uppercase tracking-[0.18em] rounded-full hover:bg-sand transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+              className="px-6 sm:px-8 py-3 sm:py-3.5 bg-white text-stone-900 font-sans text-xs font-medium uppercase tracking-[0.18em] rounded-full hover:bg-sand transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
             >
               Shop The Collection
             </Link>
