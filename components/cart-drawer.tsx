@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/cart-context'
 import { CheckoutModal } from '@/components/checkout-modal'
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Truck, Loader2 } from 'lucide-react'
@@ -21,7 +22,9 @@ const loadRazorpayScript = (): Promise<boolean> => {
 }
 
 export function CartDrawer() {
-  const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems } = useCart()
+  const router = useRouter()
+  // 1. Destructured clearCart here
+  const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems, clearCart } = useCart()
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -66,9 +69,35 @@ export function CartDrawer() {
         description: `Order for ${totalItems} item(s)`,
         order_id: orderData.id,
         handler: function (response: any) {
-          // Success Callback
-          alert(`Payment Successful!\nPayment ID: ${response.razorpay_payment_id}`)
+          // A. Snapshot Order before clearing context
+          const newOrder = {
+            id: response.razorpay_order_id || `ORD-${Date.now()}`,
+            paymentId: response.razorpay_payment_id,
+            date: new Date().toLocaleDateString('en-IN', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            }),
+            items: [...cart],
+            totalAmount: subtotal,
+            status: 'Confirmed',
+          }
+
+          // B. Store order details in LocalStorage
+          try {
+            const existingOrders = JSON.parse(localStorage.getItem('my_orders') || '[]')
+            localStorage.setItem('my_orders', JSON.stringify([newOrder, ...existingOrders]))
+          } catch (e) {
+            console.error('Failed to record order history', e)
+          }
+
+          // C. Explicitly wipe cart storage key & clear Context state
+          localStorage.removeItem('ishira_cart_v1')
+          clearCart()
           closeCart()
+
+          // D. Optional: Redirect to orders page
+          router.push('/orders')
         },
         theme: {
           color: '#C86D51', // Terracotta theme color

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useCart } from '@/context/cart-context'
-import { ShoppingBag } from 'lucide-react'
+import { ShoppingBag, Package } from 'lucide-react'
 
 export function SiteHeader() {
   const { openCart, totalItems } = useCart()
@@ -61,20 +61,33 @@ export function SiteHeader() {
           Ishira
         </Link>
 
-        {/* Right: Collection Link & Cart Trigger */}
+        {/* Right: Collection Link, Orders Link & Cart Trigger */}
         <div className="flex items-center gap-4 sm:gap-6">
           <Link
             href="/#catalogue"
-            className="hidden sm:inline-block font-sans text-[11px] font-medium tracking-[0.25em] uppercase text-white/90 hover:text-white border-b border-white/40 hover:border-white transition-all pb-0.5"
+            className="hidden md:inline-block font-sans text-[11px] font-medium tracking-[0.25em] uppercase text-white/90 hover:text-white border-b border-white/40 hover:border-white transition-all pb-0.5"
           >
             Collection
+          </Link>
+
+          {/* My Orders Link */}
+          <Link
+            href="/orders"
+            className="flex items-center gap-1.5 text-white/90 hover:text-white transition-colors group"
+            title="My Orders"
+            aria-label="View My Orders"
+          >
+            <Package className="w-5 h-5 stroke-[1.5]" />
+            <span className="hidden sm:inline-block font-sans text-[11px] font-medium tracking-[0.25em] uppercase border-b border-white/40 hover:border-white transition-all pb-0.5">
+              Orders
+            </span>
           </Link>
 
           {/* Cart Trigger Button */}
           <button
             type="button"
             onClick={openCart}
-            className="relative p-2 text-white/90 hover:text-white transition-colors group"
+            className="relative p-2 text-white/90 hover:text-white transition-colors group cursor-pointer"
             aria-label={`Shopping Cart with ${totalItems} items`}
           >
             <ShoppingBag className="w-5 h-5 stroke-[1.5]" />

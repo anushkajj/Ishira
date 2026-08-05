@@ -44,7 +44,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isHydrated) {
       try {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart))
+        if (cart.length === 0) {
+          localStorage.removeItem(CART_STORAGE_KEY)
+        } else {
+          localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart))
+        }
       } catch (e) {
         console.error('Failed to save cart storage', e)
       }
@@ -85,6 +89,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = () => {
     setCart([])
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY)
+    } catch (e) {
+      console.error('Failed to clear cart storage', e)
+    }
   }
 
   const openCart = () => setIsCartOpen(true)
