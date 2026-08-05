@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/cart-context'
 import { CheckoutModal } from '@/components/checkout-modal'
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Truck, Loader2 } from 'lucide-react'
+import { X, Trash2, Plus, Minus, ShoppingBag, ShieldCheck, Truck } from 'lucide-react'
 
 // Dynamic script loader for Razorpay Checkout SDK
 const loadRazorpayScript = (): Promise<boolean> => {
@@ -23,23 +23,21 @@ const loadRazorpayScript = (): Promise<boolean> => {
 
 export function CartDrawer() {
   const router = useRouter()
-  // 1. Destructured clearCart here
   const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity, subtotal, totalItems, clearCart } = useCart()
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   if (!isCartOpen) return null
 
-  const freeShippingThreshold = 3000
+  const freeShippingThreshold = 1000
   const progressToFreeShipping = Math.min(100, (subtotal / freeShippingThreshold) * 100)
   const remainingForFreeShipping = freeShippingThreshold - subtotal
 
-  // Direct Razorpay Payment Handler
+  // Direct Razorpay Payment Handler (Kept intact for quick re-enabling)
   const handleRazorpayPayment = async () => {
     setIsLoading(true)
 
     try {
-      // 1. Load Razorpay SDK
       const isLoaded = await loadRazorpayScript()
       if (!isLoaded) {
         alert('Failed to load Razorpay SDK. Please check your internet connection.')
@@ -47,7 +45,6 @@ export function CartDrawer() {
         return
       }
 
-      // 2. Create Order on Server
       const res = await fetch('/api/razorpay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,7 +57,6 @@ export function CartDrawer() {
         throw new Error(orderData.error || 'Failed to initialize payment order.')
       }
 
-      // 3. Configure Razorpay Gateway Options
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderData.amount,
@@ -69,7 +65,6 @@ export function CartDrawer() {
         description: `Order for ${totalItems} item(s)`,
         order_id: orderData.id,
         handler: function (response: any) {
-          // A. Snapshot Order before clearing context
           const newOrder = {
             id: response.razorpay_order_id || `ORD-${Date.now()}`,
             paymentId: response.razorpay_payment_id,
@@ -83,7 +78,6 @@ export function CartDrawer() {
             status: 'Confirmed',
           }
 
-          // B. Store order details in LocalStorage
           try {
             const existingOrders = JSON.parse(localStorage.getItem('my_orders') || '[]')
             localStorage.setItem('my_orders', JSON.stringify([newOrder, ...existingOrders]))
@@ -91,20 +85,16 @@ export function CartDrawer() {
             console.error('Failed to record order history', e)
           }
 
-          // C. Explicitly wipe cart storage key & clear Context state
           localStorage.removeItem('ishira_cart_v1')
           clearCart()
           closeCart()
-
-          // D. Optional: Redirect to orders page
           router.push('/orders')
         },
         theme: {
-          color: '#C86D51', // Terracotta theme color
+          color: '#C86D51',
         },
       }
 
-      // 4. Open Razorpay Checkout Window
       const paymentObject = new (window as any).Razorpay(options)
       paymentObject.open()
     } catch (err: any) {
@@ -152,7 +142,7 @@ export function CartDrawer() {
                 <span className="text-foreground font-medium flex items-center gap-1.5">
                   <Truck className="w-3.5 h-3.5 text-terracotta" />
                   {remainingForFreeShipping <= 0 ? (
-                    <span className="text-emerald-700 font-semibold">You unlocked FREE Pan-India Shipping!</span>
+                    <span className="text-emerald-700 font-semibold">You unlocked FREE Shipping in Bangalore!</span>
                   ) : (
                     <span>Add <strong className="text-terracotta">₹{remainingForFreeShipping.toLocaleString('en-IN')}</strong> more for Free Shipping</span>
                   )}
@@ -268,28 +258,17 @@ export function CartDrawer() {
                     </span>
                   </div>
                   <p className="font-sans text-[11px] text-muted-foreground">
-                    Taxes included. Free Pan-India shipping applied on qualified orders.
+                    Taxes included. Free shipping in Bangalore applied on qualified orders.
                   </p>
                 </div>
 
-                {/* Razorpay Action Button */}
+                {/* Paused Ordering Button */}
                 <button
                   type="button"
-                  disabled={isLoading}
-                  onClick={handleRazorpayPayment}
-                  className="w-full py-4 bg-foreground text-background hover:bg-terracotta hover:text-white font-sans text-xs font-medium uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
+                  disabled={true}
+                  className="w-full py-4 bg-muted text-muted-foreground font-sans text-xs font-medium uppercase tracking-widest cursor-not-allowed opacity-80 border border-border flex items-center justify-center text-center"
                 >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Connecting to Gateway...
-                    </>
-                  ) : (
-                    <>
-                      Proceed to Pay
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
+                  Ordering Temporarily Paused
                 </button>
 
                 <div className="flex items-center justify-center gap-2 font-sans text-[10px] text-muted-foreground uppercase tracking-widest pt-1">

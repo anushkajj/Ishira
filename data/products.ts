@@ -9,7 +9,7 @@ export const PRODUCTS: Product[] = [
     price: 5,
     category: 'Drinkware',
     imageSrc: '/images/product-cup-1.png',
-    images: ['/images/product-cup-1.png', '/images/product-cup.png'],
+    images: ['/images/product-cup-1.png'],
     description:
       'Engineered for morning coffee or evening tea. Hand-molded in small batches using stoneware clay, finished with a serene speckled matte glaze that holds warmth beautifully.',
     details: [
@@ -45,7 +45,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'cutlery-holder',
     name: 'Artisan Cutlery Holder',
-    subtitle: 'Woven ceramic basket utensil crocks',
+    subtitle: '',
     price: 395,
     category: 'Serveware',
     imageSrc: '/images/product-holder.png',
@@ -64,7 +64,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'minimalist-vase',
     name: 'Solitary Sculptural Vase',
-    subtitle: 'Matte neutral ceramic statement vase',
+    subtitle: '',
     price: 700,
     category: 'Décor',
     imageSrc: '/images/product-vase.png',
@@ -86,7 +86,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ceramic-jars-set',
     name: 'Blossom Ceramic Canister Jars',
-    subtitle: 'Air-tight kitchen & pantry jars with wooden lid',
+    subtitle: '',
     price: 625,
     category: 'Storage',
     imageSrc: '/images/product-cup.png',
@@ -106,7 +106,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'botanical-platter',
     name: 'Botanical Ceramic Serving Platter',
-    subtitle: 'Oval platter with embossed leaf motifs',
+    subtitle: '',
     price: 350,
     category: 'Serveware',
     imageSrc: '/images/product-tray.png',
