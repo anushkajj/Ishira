@@ -78,28 +78,6 @@ export const PRODUCTS: Product[] = [
     dimensions: '14 cm diameter × 18 cm height',
     careInstructions: 'Hand wash recommended to preserve glaze depth.',
     isNewArrival: false,
-    inStock: false,
-  },
-  {
-    id: 'minimalist-vase',
-    name: 'Solitary Sculptural Vase',
-    subtitle: '',
-    price: 300,
-    category: 'Décor',
-    imageSrc: '/images/product-vase.png',
-    images: ['/images/product-vase.png'],
-    description:
-      'A quiet centerpiece designed to showcase single stems, dried botanicals, or stand alone as architectural sculpture.',
-    details: [
-      'Raw unglazed exterior texture',
-      'Glazed waterproof interior',
-      'Hand-pressed ceramic studio mark',
-      'Weighted balance design',
-    ],
-    dimensions: '12 cm diameter × 26 cm height',
-    careInstructions: 'Rinse interior with warm soapy water.',
-    isBestSeller: false,
-    isNewArrival: true,
     inStock: true,
   },
   {
