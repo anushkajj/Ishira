@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useCart } from '@/context/cart-context'
 import { ShoppingBag, Package } from 'lucide-react'
 
@@ -41,7 +42,7 @@ export function SiteHeader() {
         }`}
         role="banner"
       >
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-12 flex items-center justify-between transition-all duration-300">
+        <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-12 flex items-center justify-between transition-all duration-300">
 
           {/* Left: Quick Nav Links */}
           <nav className="flex items-center gap-3 sm:gap-6 md:gap-8 min-w-[70px]">
@@ -59,13 +60,20 @@ export function SiteHeader() {
             </Link>
           </nav>
 
-          {/* Center: Brand Name Logo */}
+          {/* Center: Brand PNG Logo (Scaled Up) */}
           <Link
             href="/"
-            className="font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.2em] sm:tracking-[0.35em] uppercase font-light text-white hover:opacity-80 transition-opacity drop-shadow-sm text-center"
+            className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center hover:opacity-80 transition-opacity"
             aria-label="Ishira Homeware home"
           >
-            Ishira
+          <Image
+            src="/logo-full.png"
+            alt="Ishira Homeware Logo"
+            width={280}
+            height={80}
+            priority
+            className="h-14 sm:h-18 md:h-22 w-auto object-contain brightness-0 invert drop-shadow-sm scale-150 sm:scale-175 md:scale-[2]"
+          />
           </Link>
 
           {/* Right: Actions & Cart Trigger */}
