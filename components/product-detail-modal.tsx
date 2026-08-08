@@ -242,11 +242,7 @@ export function ProductDetailModal({ product, onClose }: ProductDetailModalProps
                 </div>
                 <div className="flex flex-col items-center gap-1">
                   <Truck className="w-4 h-4 text-terracotta" />
-                  <span className="font-sans text-[10px] text-muted-foreground">Safe Pan-India Shipping</span>
-                </div>
-                <div className="flex flex-col items-center gap-1">
-                  <RotateCcw className="w-4 h-4 text-terracotta" />
-                  <span className="font-sans text-[10px] text-muted-foreground">Breakage Replacement</span>
+                  <span className="font-sans text-[10px] text-muted-foreground">Safe Shipping in Bangalore</span>
                 </div>
               </div>
             </div>
